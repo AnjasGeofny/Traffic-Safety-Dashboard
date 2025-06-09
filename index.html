@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Traffic Crash Dashboard</title>
+    <title>Dashboard Kecelakaan Lalu Lintas</title>
     <script src="libs/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3.0.0/dist/d3-scale-chromatic.min.js"></script>
     <script src="libs/colorbrewer.js"></script>
@@ -14,7 +14,7 @@
       <div class="navbar">
         <div class="logo">
           <span class="logo-icon">🚦</span>
-          <span class="logo-text">Traffic Safety Dashboard</span>
+          <span class="logo-text">Dashboard Kecelakaan Lalu Lintas</span>
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
         <!-- Dashboard Overview -->
         <div class="dashboard-overview">
           <div class="overview-content">
-            <h2>🚦 Dashboard Analisis Faktor Penyebab Kecelakaan</h2>
+            <h2>🚦Analisis Faktor Penyebab Kecelakaan</h2>
             <p class="overview-description">
               Dashboard ini menyajikan informasi lengkap tentang data kecelakaan
               lalu lintas. Tujuannya adalah untuk membantu kita memahami pola
@@ -174,10 +174,10 @@
               <div id="monthly-trend"></div>
               <div class="chart-insight">
                 <p>
-                  <strong>Insight:</strong> Grafik ini menunjukkan pola temporal
-                  kecelakaan lalu lintas. Bulan dengan angka tinggi menandakan
-                  periode berbahaya yang memerlukan perhatian khusus seperti
-                  kampanye keselamatan atau peningkatan patroli.
+                  <strong>Insight:</strong>Grafik ini menunjukkan pola
+                  kecelakaan lalu lintas sepanjang tahun. Bulan-bulan dengan
+                  angka kecelakaan tinggi bisa jadi waktu yang rawan, jadi perlu
+                  perhatian lebih.
                 </p>
               </div>
             </div>
@@ -196,9 +196,8 @@
                 <p>
                   <strong>Insight:</strong> Warna yang lebih gelap menunjukkan
                   tingkat kecelakaan yang tinggi. Pola ini membantu
-                  mengidentifikasi jam rawan (rush hour) dan hari berbahaya
-                  untuk mengoptimalkan penjadwalan patroli dan kampanye
-                  keselamatan.
+                  mengidentifikasi jam rawan (rush hour) dan hari yang rawan
+                  kecelakaan.
                 </p>
               </div>
             </div>
@@ -218,8 +217,7 @@
                   <strong>Insight:</strong> Diagram donut ini menampilkan
                   proporsi setiap jenis tabrakan. Jenis tabrakan dengan
                   persentase tertinggi menunjukkan area prioritas untuk
-                  intervensi keselamatan seperti perbaikan infrastruktur atau
-                  edukasi pengemudi.
+                  upaya peningkatan keselamatan.
                 </p>
               </div>
             </div>
@@ -234,10 +232,7 @@
               <div id="main-causes-bar"></div>
               <div class="chart-insight">
                 <p>
-                  <strong>Insight:</strong> Grafik batang ini mengurutkan
-                  penyebab kecelakaan dari yang paling sering terjadi. Data ini
-                  krusial untuk merancang program pencegahan yang tepat sasaran
-                  dan mengalokasikan sumber daya secara efektif.
+                  <strong>Insight:</strong>Grafik batang ini menunjukkan urutan penyebab kecelakaan, dari yang paling sering sampai yang paling jarang terjadi.".
                 </p>
               </div>
             </div>
@@ -267,7 +262,7 @@
                   <div class="chart-section-header">
                     <h4>🔀 Alignment Jalan</h4>
                     <div class="chart-description">
-                      Distribusi kecelakaan berdasarkan geometri jalan
+                      Distribusi kecelakaan berdasarkan bentuk struktur jalan
                     </div>
                   </div>
                   <div id="road-alignment-chart"></div>
@@ -318,7 +313,7 @@
                   <div class="insight-card road-geometry-insight">
                     <div class="insight-header">
                       <span class="insight-icon">🔀</span>
-                      <h5>Geometri Jalan</h5>
+                      <h5>Struktur Jalan</h5>
                     </div>
                     <ul class="insight-list">
                       <li>
@@ -461,7 +456,7 @@
                     </div>
                     <ul class="insight-list">
                       <li>
-                        Kampanye keselamatan intensif saat cuaca buruk
+                        Peringatan keselamatan intensif saat cuaca buruk
                         (hujan/salju)
                       </li>
                       <li>
