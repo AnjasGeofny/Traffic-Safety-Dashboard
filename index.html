@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traffic Crash Dashboard</title>
+    <script src="libs/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3.0.0/dist/d3-scale-chromatic.min.js"></script>
+    <script src="libs/colorbrewer.js"></script>
+    <link rel="stylesheet" href="style_new.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="navbar">
+        <div class="logo">
+          <span class="logo-icon">🚦</span>
+          <span class="logo-text">Traffic Safety Dashboard</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-container">
+      <div class="main-content">
+        <!-- Dashboard Overview -->
+        <div class="dashboard-overview">
+          <div class="overview-content">
+            <h2>🚦 Dashboard Analisis Faktor Penyebab Kecelakaan</h2>
+            <p class="overview-description">
+              Dashboard ini menyajikan informasi lengkap tentang data kecelakaan
+              lalu lintas. Tujuannya adalah untuk membantu kita memahami pola
+              kejadian, mengenali faktor-faktor yang berisiko, dan mengambil
+              keputusan yang lebih tepat untuk meningkatkan keselamatan di
+              jalan.
+            </p>
+            <div class="overview-features">
+              <div class="feature-item">
+                <span class="feature-icon">🔍</span>
+                <span class="feature-text"
+                  >Gunakan filter untuk menganalisis kondisi spesifik</span
+                >
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <span class="feature-text"
+                  >Hover pada grafik untuk melihat detail data</span
+                >
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📈</span>
+                <span class="feature-text"
+                  >Persentase menunjukkan proporsi data yang ditampilkan</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel" id="filter-panel">
+          <div class="filter-header">
+            <h4>🔧 Filter Data Analisis</h4>
+            <p class="filter-description">
+              Gunakan filter di bawah ini untuk menyesuaikan data yang
+              ditampilkan pada dashboard
+            </p>
+          </div>
+          <div class="filter-container">
+            <div class="filter-group">
+              <label for="weather-filter">Kondisi Cuaca</label>
+              <select id="weather-filter" class="filter-select">
+                <option value="">Semua</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="lighting-filter">Pencahayaan</label>
+              <select id="lighting-filter" class="filter-select">
+                <option value="">Semua</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="traffic-filter">Kontrol Lalu Lintas</label>
+              <select id="traffic-filter" class="filter-select">
+                <option value="">Semua</option>
+              </select>
+            </div>
+            <div class="filter-group filter-actions">
+              <button id="reset-filters" class="filter-btn">
+                Reset Filters
+              </button>
+              <button id="apply-filters" class="filter-btn filter-btn-primary">
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-section">
+          <div class="kpi-card" id="kpi-accidents">
+            <div class="kpi-icon">🚗</div>
+            <div class="kpi-content">
+              <div class="kpi-value" id="kpi-value-accidents">0</div>
+              <div class="kpi-label">Total Kecelakaan</div>
+              <div class="kpi-change" id="kpi-change-accidents">100%</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" id="kpi-injuries">
+            <div class="kpi-icon">🩺</div>
+            <div class="kpi-content">
+              <div class="kpi-value" id="kpi-value-injuries">0</div>
+              <div class="kpi-label">Total Korban</div>
+              <div class="kpi-change" id="kpi-change-injuries">100%</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" id="kpi-fatalities">
+            <div class="kpi-icon">⚠️</div>
+            <div class="kpi-content">
+              <div class="kpi-value" id="kpi-value-fatalities">0</div>
+              <div class="kpi-label">Fatalitas</div>
+              <div class="kpi-change" id="kpi-change-fatalities">100%</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" id="kpi-average-units">
+            <div class="kpi-icon">🚙</div>
+            <div class="kpi-content">
+              <div class="kpi-value" id="kpi-value-average-units">0</div>
+              <div class="kpi-label">Rata-rata Unit Terlibat</div>
+              <div class="kpi-change" id="kpi-change-average-units">100%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Explanation -->
+        <div class="kpi-explanation">
+          <div class="explanation-content">
+            <h4>📊 Penjelasan Indikator Utama</h4>
+            <div class="explanation-grid">
+              <div class="explanation-item">
+                <strong>Persentase Data:</strong> Menunjukkan berapa persen dari
+                total data yang sedang ditampilkan berdasarkan filter yang
+                diterapkan.
+              </div>
+              <div class="explanation-item">
+                <strong>Total Korban:</strong> Jumlah semua korban termasuk
+                fatal, luka berat, luka ringan, dan yang dilaporkan tidak
+                terlihat.
+              </div>
+              <div class="explanation-item">
+                <strong>Fatalitas:</strong> Jumlah korban jiwa dalam kecelakaan
+                lalu lintas yang memerlukan perhatian serius.
+              </div>
+              <div class="explanation-item">
+                <strong>Unit Terlibat:</strong> Rata-rata kendaraan yang
+                terlibat per kecelakaan, indikator tingkat keparahan tabrakan.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+          <!-- Monthly Trend Line Chart -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h3>Tren Kecelakaan Bulanan</h3>
+              <div class="chart-subtitle">
+                Analisis tren kecelakaan sepanjang tahun
+              </div>
+            </div>
+            <div class="chart-content">
+              <div id="monthly-trend"></div>
+              <div class="chart-insight">
+                <p>
+                  <strong>Insight:</strong> Grafik ini menunjukkan pola temporal
+                  kecelakaan lalu lintas. Bulan dengan angka tinggi menandakan
+                  periode berbahaya yang memerlukan perhatian khusus seperti
+                  kampanye keselamatan atau peningkatan patroli.
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Hour vs Day Heatmap -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h3>Heatmap Jam vs Hari</h3>
+              <div class="chart-subtitle">
+                Pola kecelakaan berdasarkan jam dan hari
+              </div>
+            </div>
+            <div class="chart-content">
+              <div id="heatmap-chart"></div>
+              <div class="chart-insight">
+                <p>
+                  <strong>Insight:</strong> Warna yang lebih gelap menunjukkan
+                  tingkat kecelakaan yang tinggi. Pola ini membantu
+                  mengidentifikasi jam rawan (rush hour) dan hari berbahaya
+                  untuk mengoptimalkan penjadwalan patroli dan kampanye
+                  keselamatan.
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Crash Types Donut Chart -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h3>Jenis Tabrakan</h3>
+              <div class="chart-subtitle">
+                Distribusi jenis tabrakan yang terjadi
+              </div>
+            </div>
+            <div class="chart-content">
+              <div id="crash-types-donut"></div>
+              <div class="chart-insight">
+                <p>
+                  <strong>Insight:</strong> Diagram donut ini menampilkan
+                  proporsi setiap jenis tabrakan. Jenis tabrakan dengan
+                  persentase tertinggi menunjukkan area prioritas untuk
+                  intervensi keselamatan seperti perbaikan infrastruktur atau
+                  edukasi pengemudi.
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Main Causes Bar Chart -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h3>Penyebab Utama Kecelakaan</h3>
+              <div class="chart-subtitle">10 penyebab kecelakaan teratas</div>
+            </div>
+            <div class="chart-content">
+              <div id="main-causes-bar"></div>
+              <div class="chart-insight">
+                <p>
+                  <strong>Insight:</strong> Grafik batang ini mengurutkan
+                  penyebab kecelakaan dari yang paling sering terjadi. Data ini
+                  krusial untuk merancang program pencegahan yang tepat sasaran
+                  dan mengalokasikan sumber daya secara efektif.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Road Condition Analysis Section -->
+        <div class="analysis-section">
+          <div class="chart-container full-width">
+            <div class="chart-header">
+              <h3>🛣️ Analisis Kondisi Jalan</h3>
+              <div class="chart-subtitle">
+                Pengaruh kondisi jalan dan infrastruktur terhadap kecelakaan
+              </div>
+            </div>
+            <div class="chart-content">
+              <div class="road-charts-grid">
+                <div class="chart-quarter">
+                  <div class="chart-section-header">
+                    <h4>🛤️ Kondisi Permukaan Jalan</h4>
+                    <div class="chart-description">
+                      Distribusi kecelakaan berdasarkan kondisi permukaan jalan
+                    </div>
+                  </div>
+                  <div id="road-surface-chart"></div>
+                </div>
+                <div class="chart-quarter">
+                  <div class="chart-section-header">
+                    <h4>🔀 Alignment Jalan</h4>
+                    <div class="chart-description">
+                      Distribusi kecelakaan berdasarkan geometri jalan
+                    </div>
+                  </div>
+                  <div id="road-alignment-chart"></div>
+                </div>
+                <div class="chart-quarter">
+                  <div class="chart-section-header">
+                    <h4>🚧 Jenis Jalan</h4>
+                    <div class="chart-description">
+                      Distribusi kecelakaan berdasarkan jenis trafficway
+                    </div>
+                  </div>
+                  <div id="trafficway-chart"></div>
+                </div>
+                <div class="chart-quarter">
+                  <div class="chart-section-header">
+                    <h4>⚠️ Cacat Jalan</h4>
+                    <div class="chart-description">
+                      Distribusi kecelakaan berdasarkan kondisi cacat jalan
+                    </div>
+                  </div>
+                  <div id="road-defect-chart"></div>
+                </div>
+              </div>
+
+              <div class="road-insights">
+                <div class="insight-grid">
+                  <div class="insight-card road-surface-insight">
+                    <div class="insight-header">
+                      <span class="insight-icon">🛤️</span>
+                      <h5>Kondisi Permukaan</h5>
+                    </div>
+                    <ul class="insight-list">
+                      <li>
+                        Jalan kering dominasi mayoritas kecelakaan karena volume
+                        lalu lintas tinggi
+                      </li>
+                      <li>
+                        Jalan basah menunjukkan peningkatan risiko akibat
+                        berkurangnya traksi
+                      </li>
+                      <li>
+                        Kondisi es dan salju memerlukan perhatian khusus untuk
+                        keselamatan
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="insight-card road-geometry-insight">
+                    <div class="insight-header">
+                      <span class="insight-icon">🔀</span>
+                      <h5>Geometri Jalan</h5>
+                    </div>
+                    <ul class="insight-list">
+                      <li>
+                        Jalan lurus dan datar memiliki frekuensi kecelakaan
+                        tertinggi
+                      </li>
+                      <li>
+                        Tikungan dan tanjakan meningkatkan kompleksitas
+                        berkendara
+                      </li>
+                      <li>
+                        Desain geometri jalan berpengaruh pada tingkat
+                        keselamatan
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="insight-card road-infrastructure-insight">
+                    <div class="insight-header">
+                      <span class="insight-icon">🚧</span>
+                      <h5>Infrastruktur Jalan</h5>
+                    </div>
+                    <ul class="insight-list">
+                      <li>
+                        Jalan tanpa pembagi memiliki risiko tabrakan frontal
+                        lebih tinggi
+                      </li>
+                      <li>
+                        Jalan dengan median dapat mengurangi kecelakaan serius
+                      </li>
+                      <li>
+                        Cacat jalan seperti lubang meningkatkan risiko
+                        kecelakaan
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-insight">
+                <p>
+                  <strong>Insight:</strong> Analisis kondisi jalan mengungkap
+                  bahwa infrastruktur fisik jalan memainkan peran penting dalam
+                  keselamatan lalu lintas. Kondisi permukaan yang buruk,
+                  geometri jalan yang tidak optimal, dan kurangnya fasilitas
+                  pembagi jalan dapat meningkatkan risiko kecelakaan secara
+                  signifikan.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Additional Analysis Section -->
+        <div class="analysis-section">
+          <div class="chart-container full-width">
+            <div class="chart-header">
+              <h3>🌤️ Analisis Kondisi Lingkungan</h3>
+              <div class="chart-subtitle">
+                Pengaruh cuaca dan pencahayaan terhadap kecelakaan
+              </div>
+            </div>
+            <div class="chart-content">
+              <div class="multi-chart-row">
+                <div class="chart-half">
+                  <div class="chart-section-header">
+                    <h4>🌤️ Kondisi Cuaca</h4>
+                    <div class="chart-description">
+                      Distribusi kecelakaan berdasarkan kondisi cuaca saat
+                      kejadian
+                    </div>
+                  </div>
+                  <div id="weather-chart"></div>
+                </div>
+                <div class="chart-half">
+                  <div class="chart-section-header">
+                    <h4>💡 Kondisi Pencahayaan</h4>
+                    <div class="chart-description">
+                      Distribusi kecelakaan berdasarkan kondisi pencahayaan
+                    </div>
+                  </div>
+                  <div id="lighting-chart"></div>
+                </div>
+              </div>
+
+              <div class="environmental-insights">
+                <div class="insight-grid">
+                  <div class="insight-card weather-insight">
+                    <div class="insight-header">
+                      <span class="insight-icon">🌦️</span>
+                      <h5>Dampak Cuaca</h5>
+                    </div>
+                    <ul class="insight-list">
+                      <li>
+                        Cuaca cerah (CLEAR) dominasi mayoritas kecelakaan karena
+                        volume lalu lintas tinggi
+                      </li>
+                      <li>
+                        Kecelakaan saat hujan menunjukkan peningkatan risiko
+                        akibat jalan licin
+                      </li>
+                      <li>
+                        Kondisi berawan/mendung berpotensi mengurangi
+                        visibilitas pengemudi
+                      </li>
+                      <li>
+                        Cuaca salju memerlukan perhatian khusus untuk
+                        keselamatan berkendara
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="insight-card lighting-insight">
+                    <div class="insight-header">
+                      <span class="insight-icon">🌅</span>
+                      <h5>Pengaruh Pencahayaan</h5>
+                    </div>
+                    <ul class="insight-list">
+                      <li>
+                        Siang hari (DAYLIGHT) memiliki frekuensi kecelakaan
+                        tertinggi
+                      </li>
+                      <li>
+                        Kondisi gelap meningkatkan tingkat keparahan kecelakaan
+                      </li>
+                      <li>
+                        Waktu fajar dan senja memiliki risiko tinggi karena
+                        perubahan cahaya
+                      </li>
+                      <li>
+                        Pencahayaan jalan yang baik dapat mengurangi kecelakaan
+                        malam
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="insight-card recommendation-insight">
+                    <div class="insight-header">
+                      <span class="insight-icon">⚠️</span>
+                      <h5>Rekomendasi</h5>
+                    </div>
+                    <ul class="insight-list">
+                      <li>
+                        Kampanye keselamatan intensif saat cuaca buruk
+                        (hujan/salju)
+                      </li>
+                      <li>
+                        Peningkatan patroli pada kondisi pencahayaan rendah
+                      </li>
+                      <li>
+                        Perbaikan sistem drainase untuk mengurangi genangan saat
+                        hujan
+                      </li>
+                      <li>
+                        Optimalisasi lampu jalan di area rawan kecelakaan malam
+                        hari
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-insight">
+                <p>
+                  <strong>Insight:</strong> Analisis kondisi lingkungan ini
+                  mengungkap bagaimana faktor eksternal mempengaruhi keselamatan
+                  jalan. Cuaca buruk dan kondisi pencahayaan rendah umumnya
+                  meningkatkan risiko kecelakaan, sehingga diperlukan persiapan
+                  khusus seperti perbaikan lampu jalan dan peringatan dini
+                  cuaca.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="dashboard_new.js"></script>
+  </body>
+</html>
